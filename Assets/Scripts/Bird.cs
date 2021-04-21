@@ -9,6 +9,9 @@ public class Bird : MonoBehaviour
     public GameManager gameManager;
     public Sprite birdDied;
     public ColumnSpawner columnSpawner;
+    public Animator birdParentAnim;
+    public Animator getReadyAnim;
+    public Animator hitEffect;
 
     SpriteRenderer sp;
     Animator anim;
@@ -47,10 +50,11 @@ public class Bird : MonoBehaviour
                 // If game is not started yet or game is in pause state then start the game
                 if(GameManager.gameHasStarted == false) {
                     rb.gravityScale = 0.8f;
+                    // Desable bird parent animation(Up-Down) 
+                    birdParentAnim.enabled = false;
                     Flap();
-                    //column Spawner
-                    columnSpawner.InstantiateColumn();
-                    gameManager.GameHasStarted();
+                    //Set the trigger for the get ready anim
+                    getReadyAnim.SetTrigger("fadeOut");
                 } else {
                     Flap(); 
                 }
@@ -58,6 +62,12 @@ public class Bird : MonoBehaviour
         }
 
         BirdRotation();
+    }
+
+    public void OnGetReadyAnimFinished() {
+        //column Spawner
+        columnSpawner.InstantiateColumn();
+        gameManager.GameHasStarted();
     }
 
     void Flap(){
@@ -98,12 +108,17 @@ public class Bird : MonoBehaviour
 
     // It calls when an object collides with box collider component with isTrigger enable
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.CompareTag("Column")) {
-            print("We have scored");
-            score.Scored();
-        } else if (collision.CompareTag("Pipe")) {
-            //game over
-            gameManager.GameOver();
+        // If game is not over yet
+        if(GameManager.gameOver == false) {
+            // If gameObject collides with a column
+            if (collision.CompareTag("Column")) {
+                // print("We have scored");
+                score.Scored();
+            } else if (collision.CompareTag("Pipe")) {
+                hitEffect.SetTrigger("hit");
+                //game over
+                gameManager.GameOver();
+            }
         }
     }
 
@@ -113,6 +128,7 @@ public class Bird : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground")) {
             // If game is not over yet
             if(GameManager.gameOver == false) {
+                hitEffect.SetTrigger("hit");
                 //game over
                 gameManager.GameOver();
                 GameOver();
