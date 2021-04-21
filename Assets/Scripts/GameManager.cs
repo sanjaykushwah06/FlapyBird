@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public GameObject score;
     public GameObject getReadyImg;
     public GameObject pauseBtn;
+    public Animator blackFadeAnim;
 
     // A static variable that can be access using class name
     public static Vector2 bottomLeft;
@@ -56,6 +57,13 @@ public class GameManager : MonoBehaviour
     public void OnOkBtnPressed() {
         // SceneManager is used to load an active scene on specific index
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void OnMenuBtnPressed() {
+        // SceneManager is used to load Menu scene
+        // SceneManager.LoadScene("Menu");
+        // To trigger fadeIn animation
+        blackFadeAnim.SetTrigger("fadeIn");
     }
     // Update is called once per frame
     void Update()
