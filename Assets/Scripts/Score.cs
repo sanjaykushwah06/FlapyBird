@@ -29,6 +29,12 @@ public class Score : MonoBehaviour
         panelHighScore.text = highScore.ToString();
     }
 
+    // To get the current score
+    public int GetScore()
+    {
+        return score;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -38,7 +44,7 @@ public class Score : MonoBehaviour
     public void Scored() {
         score++;
         scoreText.text = score.ToString();
-        panelScore.text = score.ToString();
+        //panelScore.text = score.ToString();
         // When achieved new high score
         if(score > highScore) {
             highScore = score;

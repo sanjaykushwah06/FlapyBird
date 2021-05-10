@@ -31,5 +31,7 @@ public class Pause : MonoBehaviour
             img.sprite = pausedSprite;
             GameManager.gameIsPaused = false;
         }
+
     }
+
 }

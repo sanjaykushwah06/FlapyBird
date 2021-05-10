@@ -12,6 +12,7 @@ public class Bird : MonoBehaviour
     public Animator birdParentAnim;
     public Animator getReadyAnim;
     public Animator hitEffect;
+    public Animator cameraAnim;
 
     SpriteRenderer sp;
     Animator anim;
@@ -71,6 +72,8 @@ public class Bird : MonoBehaviour
     }
 
     void Flap(){
+        // To play flap sound
+        AudioManager.audiomanager.Play("flap");
         // Vector2.zero == new Vector2(0, 0)
         rb.velocity = Vector2.zero;
         // To perform jump action on bird object 
@@ -113,9 +116,11 @@ public class Bird : MonoBehaviour
             // If gameObject collides with a column
             if (collision.CompareTag("Column")) {
                 // print("We have scored");
+                // To play point sound
+                AudioManager.audiomanager.Play("point");
                 score.Scored();
             } else if (collision.CompareTag("Pipe")) {
-                hitEffect.SetTrigger("hit");
+                BirdDieEffect();
                 //game over
                 gameManager.GameOver();
             }
@@ -128,7 +133,7 @@ public class Bird : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground")) {
             // If game is not over yet
             if(GameManager.gameOver == false) {
-                hitEffect.SetTrigger("hit");
+                BirdDieEffect();
                 //game over
                 gameManager.GameOver();
                 GameOver();
@@ -136,6 +141,16 @@ public class Bird : MonoBehaviour
                 GameOver();
             }
         }
+    }
+
+    void BirdDieEffect()
+    {
+        // To play hit sound
+        AudioManager.audiomanager.Play("hit");
+        // Call trigger to start hit effect
+        hitEffect.SetTrigger("hit");
+        // Call trigger to start shake effect
+        cameraAnim.SetTrigger("shake");
     }
 
     void GameOver() {
