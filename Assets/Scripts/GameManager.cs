@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,6 +20,13 @@ public class GameManager : MonoBehaviour
     public static bool gameOver;
     public static bool gameHasStarted;
     public static bool gameIsPaused;
+
+    public Text panelScore;
+
+    // Game Score
+    public static int gameScore;
+
+    int drawScore;
 
     // It runs before the Start method
     private void Awake() {
@@ -45,25 +53,48 @@ public class GameManager : MonoBehaviour
 
     public void GameOver() {
         gameOver = true;
+        // As score is a GameObject so first we need to get script(Score) component
+        // and then call the method "GetScore" of Score script to get the current score
+        gameScore = score.GetComponent<Score>().GetScore();
         // Set visibility of score
         score.SetActive(false);
-        // Set visibility of game over canvas
-        gameOverCanvas.SetActive(true);
+        // Calls method after 1 sec delay
+        Invoke("ActivateGameOverCanvas", 1);
         // Set visible pause button
         pauseBtn.SetActive(false);
     }
 
+    void ActivateGameOverCanvas() {
+        // To play die sound
+        AudioManager.audiomanager.Play("die");
+        // Set visibility of game over canvas
+        gameOverCanvas.SetActive(true);
+    }
 
     public void OnOkBtnPressed() {
+        // To play transition sound
+        AudioManager.audiomanager.Play("transition");
         // SceneManager is used to load an active scene on specific index
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void OnMenuBtnPressed() {
+        // To play transition sound
+        AudioManager.audiomanager.Play("transition");
         // SceneManager is used to load Menu scene
         // SceneManager.LoadScene("Menu");
         // To trigger fadeIn animation
         blackFadeAnim.SetTrigger("fadeIn");
+    }
+
+    public void DrawScore()
+    {
+        if (drawScore <= gameScore)
+        {
+            panelScore.text = drawScore.ToString();
+            drawScore++;
+            Invoke("DrawScore", 0.05f);
+        }
     }
     // Update is called once per frame
     void Update()
